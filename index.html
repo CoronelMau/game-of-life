@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./src/styles/reset.css"/>
+    <link rel="stylesheet" href="./src/styles/header.css"/>
+    <link rel="stylesheet" href="./src/styles/style.css">
+    <title>Game of Life</title>
+  </head>
+  <body>
+      <header class="main_header"> 
+      <form>
+        <input type="number" id="rows" placeholder="rows"/>
+        <input type="number" id="columns" placeholder="columns"/>
+        <input type="submit" value="Submit" id="submit"/>
+      </form>
+
+      <button id="start">START</button>
+      <button id="stop">STOP</button>
+
+    </header> 
+
+
+    <div id="board"></div>
+    <script type="module" src="./src/components/main.js"></script>
+  </body>
+</html>

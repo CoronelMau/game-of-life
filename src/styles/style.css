@@ -1,0 +1,12 @@
+.table-board {
+  width: 80vh;
+  height: 80vh;
+}
+
+.table-board, .table-board td, .table-board tr {
+  border: black solid 1px;
+}
+
+.alive {
+  background-color: green;
+}
