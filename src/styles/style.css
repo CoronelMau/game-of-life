@@ -1,6 +1,11 @@
+.board {
+  width: 100vw;
+}
+
 .table-board {
   width: 80vh;
-  height: 80vh;
+  margin: auto;
+  aspect-ratio: 1 / 1;
 }
 
 .table-board, .table-board td, .table-board tr {

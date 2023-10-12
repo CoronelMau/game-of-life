@@ -15,8 +15,7 @@ function createBoard(rows, columns) {
   return board;
 }
 
-function createBoardTable(boardData) {
-  const table =  document.createElement('table');
+function addRowsToTable(table, boardData) {
   table.setAttribute('class', 'table-board');
 
   for (let i = 0; i < boardData.length; ++i) {
@@ -39,10 +38,9 @@ function createBoardTable(boardData) {
   return table;
 }
 
-function drawBoardTable(boardContainer, data) {
-  const table = createBoardTable(data);
-  boardContainer.innerHTML = '';
-  boardContainer.appendChild(table);
+function drawBoardTable(table, data) {
+  table.innerHTML = '';
+  addRowsToTable(table, data);
 }
 
 function countNeighbour(boardData, indexI, indexJ){
@@ -65,26 +63,49 @@ function countNeighbour(boardData, indexI, indexJ){
   return sum;
 }
 
+function getRowCol(element) {
+  const col = +element.getAttribute('data-col');
+  const row = +element.getAttribute('data-row');
+
+  return {
+    col,
+    row,
+  };
+}
+
 function main() {
-  let boardData = createBoard(3, 3);
-  const boardElement = document.getElementById("board")
+  let boardData = createBoard(10, 10);
+  const boardTable = document.getElementById("board-table");
   const rowsElement = document.getElementById("rows");
   const columnsElement = document.getElementById("columns");
+  let isDrawing = false;
 
-  document.addEventListener('click', e => {
-    const { target } = e;
-    e.stopPropagation();
-
-    if (target.nodeName === 'TD') {
-      const col = +target.getAttribute('data-col');
-      const row = +target.getAttribute('data-row');
-      boardData[row][col] = !boardData[row][col];
-
-      drawBoardTable(boardElement, boardData);
-    }
-  }, false);
-
+  const chageStatus = (row, col) => boardData[row][col] = !boardData[row][col];
   
+  drawBoardTable(boardTable, boardData);
+  
+  function drawCell(event) {
+    const {target} = event;
+
+    if(isDrawing && target.nodeName === 'TD'){
+      const { col, row } = getRowCol(target);
+
+      chageStatus(row, col);
+      target.classList.toggle('alive');
+    }
+  }
+
+  document.onselectstart = () => false;
+  // Enable and disable painting mode.
+  document.addEventListener('mousedown', () => {
+    isDrawing = true;
+    return false;
+  }, true);
+  document.onmouseup = () => isDrawing = false;
+
+  boardTable.onmouseover = drawCell;
+  boardTable.onmousedown = drawCell;
+
   document.getElementById("submit").addEventListener("click", function(event){
     event.preventDefault();
 
@@ -92,12 +113,12 @@ function main() {
     const columns = columnsElement.value;
 
     boardData = createBoard(rows, columns);
-    drawBoardTable(boardElement, boardData);
+    drawBoardTable(boardTable, boardData);
   })
 
   document.getElementById("start").addEventListener("click", async function(event){
     event.preventDefault();
-    
+
     intervalPlayId = setInterval(() => {
       const newBoardData = createBoard(boardData.length, boardData[0].length);
 
@@ -119,7 +140,7 @@ function main() {
       }
 
       boardData = newBoardData;
-      drawBoardTable(boardElement, boardData);
+      drawBoardTable(boardTable, boardData);
     }, 500)
   });
   
@@ -127,6 +148,20 @@ function main() {
     if (intervalPlayId) {
       clearInterval(intervalPlayId);
     }
+
+  }, false); 
+
+  document.getElementById('clear').addEventListener('click', (event)=>{
+    event.preventDefault();
+
+    if(intervalPlayId) clearInterval(intervalPlayId);
+
+    const rows = rowsElement.value == 0 ? 10: rowsElement.value;
+    const columns = columnsElement.value == 0 ? 10:rowsElement.value ;
+
+    boardData = createBoard(rows, columns);
+    drawBoardTable(boardTable, boardData);
+
   }, false);
 }
 
