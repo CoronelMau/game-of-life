@@ -1,3 +1,20 @@
+.main_header{
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin: 2rem;
+}
+
+h1{
+  display: flex;
+  width: 99%;
+  justify-content: center;
+  font-weight: bold;
+  color: #1F5372;
+  font-size: 40px;
+  margin: 10px;
+}
+
 .board {
   width: 100vw;
 }
@@ -13,5 +30,35 @@
 }
 
 .alive {
-  background-color: green;
+  background-color: #1F5372;
+}
+
+form{
+  display:flex;
+  gap: 10px;
+}
+
+input{
+  font-weight: bold;
+  font-size: 18px;
+  color: #1F5372; 
+  border-color: #1F5372;
+  background: #FFF;
+  border-radius: 40px;
+  padding: 5px 20px 5px 20px;
+}
+
+button{
+  font-weight: bold;
+  font-size: 16px;
+  color: #1F5372; 
+  border-color: #1F5372;
+  background: #FFF;
+  border-radius: 40px;  
+  padding: 5px 40px 5px 40px;
+}
+
+button:hover{
+  background-color: #1F5372;
+  color: #FFF;
 }

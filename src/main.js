@@ -79,6 +79,7 @@ function main() {
   const rowsElement = document.getElementById("rows");
   const columnsElement = document.getElementById("columns");
   let isDrawing = false;
+  let alive = 0;
 
   const chageStatus = (row, col) => boardData[row][col] = !boardData[row][col];
   
@@ -95,10 +96,24 @@ function main() {
     }
   }
 
+  function resetBoard(event){
+
+    if(intervalPlayId) {
+      clearInterval(intervalPlayId);
+      intervalPlayId = null;
+    }
+
+    const rows = rowsElement.value == 0 ? 10: rowsElement.value;
+    const columns = columnsElement.value == 0 ? 10:rowsElement.value ;
+
+    boardData = createBoard(rows, columns);
+    drawBoardTable(boardTable, boardData);
+}
+
   document.onselectstart = () => false;
   // Enable and disable painting mode.
   document.addEventListener('mousedown', () => {
-    isDrawing = true;
+    intervalPlayId == null ? isDrawing = true: isDrawing = false;
     return false;
   }, true);
   document.onmouseup = () => isDrawing = false;
@@ -122,47 +137,48 @@ function main() {
     intervalPlayId = setInterval(() => {
       const newBoardData = createBoard(boardData.length, boardData[0].length);
 
-      for(let i = 0; i < boardData.length; i++){
-        for(let j = 0; j < boardData[i].length; j++){
-          const neighbour = countNeighbour(boardData, i, j);
- 
-          if(boardData[i][j] && neighbour < 2) {
-            newBoardData[i][j] = false;
-          } else if(boardData[i][j] && neighbour > 3) {
-            newBoardData[i][j] = false;
-          } else if(!boardData[i][j] && neighbour == 3) {
-            newBoardData[i][j] = true;
-          } else {
-            newBoardData[i][j] = boardData[i][j];
-          }
+        for(let i = 0; i < boardData.length; i++){
+          for(let j = 0; j < boardData[i].length; j++){
+            const neighbour = countNeighbour(boardData, i, j);
+            
+            if(boardData[i][j] && neighbour < 2) {
+              newBoardData[i][j] = false;
+            } else if(boardData[i][j] && neighbour > 3) {
+              newBoardData[i][j] = false;
+            } else if(!boardData[i][j] && neighbour == 3) {
+              newBoardData[i][j] = true;
+            } else {
+              newBoardData[i][j] = boardData[i][j];
+            }
 
-        } 
-      }
+            if(boardData[i][j]){
+              alive += 1;
+            }
 
-      boardData = newBoardData;
-      drawBoardTable(boardTable, boardData);
-    }, 500)
+          } 
+        }
+        boardData = newBoardData;
+        drawBoardTable(boardTable, boardData);
+        
+        if(alive === 0){
+          alert("Game finish");
+          resetBoard();
+        }else{
+          alive = 0;
+        }
+      }, 500)
+        
   });
   
   document.getElementById('stop').addEventListener('click', () => {
     if (intervalPlayId) {
       clearInterval(intervalPlayId);
+      intervalPlayId = null;
     }
 
   }, false); 
 
-  document.getElementById('clear').addEventListener('click', (event)=>{
-    event.preventDefault();
-
-    if(intervalPlayId) clearInterval(intervalPlayId);
-
-    const rows = rowsElement.value == 0 ? 10: rowsElement.value;
-    const columns = columnsElement.value == 0 ? 10:rowsElement.value ;
-
-    boardData = createBoard(rows, columns);
-    drawBoardTable(boardTable, boardData);
-
-  }, false);
+  document.getElementById('clear').addEventListener('click', resetBoard, false);
 }
 
 document.addEventListener('load', main, true);
